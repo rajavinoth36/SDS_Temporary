@@ -1,0 +1,27 @@
+SdsApp {
+    server {
+        host = "localhost"
+        port = 8080
+    }
+    spamd {
+        host = "localhost"
+        port = 783
+        protocolversion = "SPAMC/1.5"
+        action = {
+            getscore = "SYMBOLS"
+            learn = "TELL"
+        }
+    }
+    stopwords {
+        source = "/stopwords.txt"
+    }
+    cacheRefreshInterval = 30
+    redisHosts = [
+        "127.0.0.1:7000"
+        "127.0.0.1:7001"
+        "127.0.0.1:7002"
+        "127.0.0.1:7003"
+        "127.0.0.1:7004"
+        "127.0.0.1:7005"
+    ]
+}

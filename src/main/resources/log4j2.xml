@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn" monitorInterval="30">
+    <Properties>
+        <Property name="log-path">/app/logs/sds</Property>
+        <Property name="component">sds</Property>
+        <Property name="request-time-file">request_time</Property>
+        <Property name="request-file">request</Property>
+        <Property name="comp-str">component</Property>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="file-log" fileName="${log-path}/${component}_${comp-str}.log"
+                     filePattern="${log-path}/${component}_${comp-str}-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%-5level] %c{1} - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${log-path}" maxDepth="1">
+                    <IfFileName glob="${component}_${comp-str}-*.log"/>
+                    <IfLastModified age="7D"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <Console name="console" target="SYSTEM_OUT">
+            <filters>
+                <ThresholdFilter level="INFO"/>
+            </filters>
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] [%-5level] %c{1} - %msg%n"/>
+        </Console>
+
+        <RollingFile name="request-time-log" fileName="${log-path}/${request-time-file}.log"
+                     filePattern="${log-path}/${request-time-file}-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${log-path}" maxDepth="1">
+                    <IfLastModified age="7D"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+
+        <RollingFile name="request-log" fileName="${log-path}/${request-file}.log"
+                     filePattern="${log-path}/${request-file}-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%t] - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+            <DefaultRolloverStrategy>
+                <Delete basePath="${log-path}" maxDepth="1">
+                    <IfFileName glob="${request-file}-*.log"/>
+                    <IfLastModified age="7D"/>
+                </Delete>
+            </DefaultRolloverStrategy>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <!--<Logger name="akka.actor" level="info" additivity="false">-->
+        <!--<appender-ref ref="request-log"/>-->
+        <!--</Logger>-->
+        <Logger name="com.freshdesk.sds" level="info">
+        </Logger>
+        <Logger name="Special.RequestTime" level="info" additivity="false">
+            <appender-ref ref="request-time-log"/>
+        </Logger>
+        <Logger name="Special.Request" level="info" additivity="false">
+            <appender-ref ref="request-log"/>
+        </Logger>
+        <Root level="info">
+            <appender-ref ref="console"/>
+            <appender-ref ref="file-log"/>
+        </Root>
+    </Loggers>
+</Configuration>
